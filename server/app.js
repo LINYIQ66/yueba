@@ -13,6 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 // 静态文件 - 上传目录
 app.use('/uploads', express.static(config.UPLOAD_DIR));
 
+// 静态文件 - Web 端 H5 页面
+app.use(express.static(path.join(__dirname, 'public')));
+
 // 路由
 app.use('/api/auth', require('./routes_auth'));
 app.use('/api/invitation', require('./routes_invitation'));

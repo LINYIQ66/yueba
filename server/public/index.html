@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>约吧 - 交友邀约</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:#f5f5f5;color:#333;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.page{display:none;min-height:100vh;max-width:480px;margin:0 auto;background:#f5f5f5;position:relative;}
+.page.active{display:block;}
+.header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#FF6B81,#FF8E9E);color:#fff;padding:16px 20px 14px;}
+.header-row{display:flex;justify-content:space-between;align-items:center;}
+.header h1{font-size:20px;font-weight:700;}
+.header .sub{font-size:13px;opacity:.85;margin-top:2px;}
+.header-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 16px;border-radius:20px;font-size:13px;cursor:pointer;}
+.header-btn:hover{opacity:.8;}
+.header-back{cursor:pointer;font-size:22px;margin-right:10px;line-height:1;}
+.simple-header{display:flex;align-items:center;padding:16px 20px;background:#fff;border-bottom:1px solid #f0f0f0;position:sticky;top:0;z-index:100;}
+.simple-header h2{font-size:18px;font-weight:600;flex:1;}
+.simple-header .back{cursor:pointer;font-size:20px;margin-right:12px;color:#999;}
+
+/* 登录页 */
+.login-page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;max-width:480px;margin:auto;padding:40px 30px;background:linear-gradient(135deg,#FF6B81,#FF8E9E);}
+.login-box{background:#fff;border-radius:20px;padding:40px 30px;width:100%;max-width:380px;box-shadow:0 10px 40px rgba(0,0,0,.1);}
+.login-logo{text-align:center;margin-bottom:30px;}
+.login-logo .icon{font-size:48px;}
+.login-logo h1{font-size:28px;color:#FF6B81;margin-top:8px;}
+.login-logo p{font-size:14px;color:#999;margin-top:4px;}
+.login-input{width:100%;padding:14px 16px;border:2px solid #eee;border-radius:12px;font-size:16px;outline:none;transition:border .2s;margin-bottom:14px;}
+.login-input:focus{border-color:#FF6B81;}
+.avatar-options{display:flex;justify-content:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.av-opt{width:50px;height:50px;border-radius:50%;font-size:24px;display:flex;align-items:center;justify-content:center;border:3px solid transparent;cursor:pointer;background:#f5f5f5;}
+.av-opt.sel{border-color:#FF6B81;background:#FFF0F2;}
+.btn-pink{width:100%;padding:14px;background:linear-gradient(135deg,#FF6B81,#FF8E9E);color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+.btn-pink:hover{opacity:.85;}
+.btn-pink:disabled{opacity:.5;cursor:default;}
+
+/* 分类标签 */
+.type-tabs{padding:10px 16px;background:#fff;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.type-tab{display:inline-block;padding:7px 18px;margin-right:8px;border-radius:20px;font-size:13px;background:#f5f5f5;color:#666;cursor:pointer;}
+.type-tab.active{background:#FF6B81;color:#fff;}
+
+/* 卡片 */
+.card{background:#fff;border-radius:16px;margin:10px 16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.user-row{display:flex;align-items:center;gap:10px;}
+.avatar{width:42px;height:42px;border-radius:50%;background:#eee;object-fit:cover;flex-shrink:0;}
+.user-info{line-height:1.4;}
+.nickname{font-size:14px;font-weight:600;color:#333;}
+.meta{font-size:12px;color:#999;}
+.badge{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500;}
+.badge-1{background:#FFF0E6;color:#FF8C42;}
+.badge-2{background:#E8F0FE;color:#4285F4;}
+.badge-3{background:#E8F8E8;color:#34A853;}
+.badge-4{background:#F3E8FF;color:#9334E6;}
+.card-title{font-size:16px;font-weight:600;color:#222;margin-bottom:6px;}
+.card-desc{font-size:13px;color:#666;line-height:1.5;margin-bottom:8px;}
+.card-info{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;}
+.card-info span{font-size:12px;color:#999;}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f0f0f0;}
+.card-footer .count{font-size:12px;color:#999;}
+.btn-sm{padding:7px 20px;background:linear-gradient(135deg,#FF6B81,#FF8E9E);color:#fff;border:none;border-radius:20px;font-size:13px;cursor:pointer;}
+.btn-sm:hover{opacity:.85;}
+.btn-outline-sm{padding:6px 18px;background:transparent;color:#FF6B81;border:1.5px solid #FF6B81;border-radius:20px;font-size:12px;cursor:pointer;}
+
+/* 空状态 */
+.empty{padding:80px 20px;text-align:center;color:#999;}
+.empty .icon{font-size:48px;margin-bottom:12px;}
+.empty p{font-size:14px;}
+
+/* 加载更多 */
+.load-more{text-align:center;padding:20px;color:#bbb;font-size:13px;}
+
+/* 表单 */
+.form{padding:16px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:14px;color:#333;font-weight:600;margin-bottom:6px;}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;border:1.5px solid #eee;border-radius:10px;font-size:14px;outline:none;transition:border .2s;background:#f9f9f9;}
+.form-group input:focus,.form-group textarea:focus{border-color:#FF6B81;background:#fff;}
+.form-group textarea{min-height:80px;resize:vertical;}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.type-opt{text-align:center;padding:14px 8px;background:#f9f9f9;border-radius:12px;border:1.5px solid #eee;cursor:pointer;font-size:14px;color:#666;}
+.type-opt.active{background:#FFF0F2;border-color:#FF6B81;color:#FF6B81;}
+.count-grid{display:flex;gap:10px;flex-wrap:wrap;}
+.count-opt{padding:8px 18px;background:#f9f9f9;border-radius:8px;border:1.5px solid #eee;cursor:pointer;font-size:13px;color:#666;}
+.count-opt.active{background:#FFF0F2;border-color:#FF6B81;color:#FF6B81;}
+.btn-full{padding:14px;width:100%;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;border:none;}
+.mt-16{margin-top:16px;}
+
+/* 详情页 */
+.detail-host{display:flex;align-items:center;gap:12px;padding:0 0 12px 0;}
+.detail-host .avatar{width:56px;height:56px;}
+.detail-host .info{flex:1;}
+.detail-host .name{font-size:16px;font-weight:600;}
+.detail-host .bio{font-size:13px;color:#888;margin-top:2px;}
+.detail-title{font-size:20px;font-weight:700;color:#222;margin-bottom:10px;}
+.detail-desc{font-size:14px;color:#555;line-height:1.6;margin-bottom:16px;}
+.detail-meta{display:flex;flex-direction:column;gap:8px;}
+.detail-meta span{font-size:13px;color:#555;}
+.participants{padding:16px;background:#fff;border-radius:16px;margin:10px 16px;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.participants h3{font-size:15px;font-weight:600;margin-bottom:12px;}
+.p-list{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;}
+.p-item{display:flex;flex-direction:column;align-items:center;min-width:60px;}
+.p-item .avatar{width:44px;height:44px;}
+.p-item .name{font-size:11px;color:#666;margin-top:4px;overflow:hidden;text-overflow:ellipsis;max-width:60px;}
+.action-fixed{padding:12px 16px;background:#fff;border-top:1px solid #f0f0f0;position:sticky;bottom:0;}
+
+/* Tab */
+.tab-bar{display:flex;background:#fff;border-bottom:1px solid #f0f0f0;}
+.tab{flex:1;text-align:center;padding:14px 0;font-size:14px;color:#999;cursor:pointer;position:relative;}
+.tab.active{color:#FF6B81;font-weight:600;}
+.tab.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:3px;background:#FF6B81;border-radius:2px;}
+
+/* 我的 */
+.my-header{display:flex;align-items:center;padding:20px;background:linear-gradient(135deg,#FF6B81,#FF8E9E);color:#fff;cursor:pointer;}
+.my-header .avatar{width:52px;height:52px;border:3px solid rgba(255,255,255,.5);}
+.my-info{flex:1;margin-left:14px;}
+.my-name{font-size:18px;font-weight:700;}
+.my-meta{font-size:12px;opacity:.85;margin-top:2px;}
+.my-edit{padding:5px 14px;border:1.5px solid rgba(255,255,255,.5);border-radius:20px;font-size:12px;color:#fff;background:transparent;cursor:pointer;}
+
+/* profile */
+.profile-page{padding:20px;}
+.profile-page .avatar-area{text-align:center;padding:20px 0;}
+.profile-page .avatar-area .avatar{width:72px;height:72px;border:3px solid #FF6B81;}
+.tag-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.tag{padding:6px 14px;background:#f5f5f5;border-radius:20px;font-size:12px;color:#666;border:1.5px solid transparent;cursor:pointer;}
+.tag.active{background:#FFF0F2;border-color:#FF6B81;color:#FF6B81;}
+
+/* Toast */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:14px 24px;border-radius:10px;font-size:14px;z-index:9999;transition:opacity .3s;pointer-events:none;}
+.toast.hidden{opacity:0;}
+
+/* Loading overlay */
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:9998;display:flex;align-items:center;justify-content:center;}
+.loading-overlay.hidden{display:none;}
+.spinner{width:36px;height:36px;border:3px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Picker custom */
+.datetime-group{display:flex;gap:10px;}
+.datetime-group input{flex:1;}
+
+/* 底部导航 */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid #f0f0f0;display:flex;z-index:200;}
+.nav-item{flex:1;text-align:center;padding:8px 0 6px;cursor:pointer;color:#999;font-size:11px;}
+.nav-item.active{color:#FF6B81;}
+.nav-item .nav-icon{font-size:22px;display:block;}
+.has-nav{padding-bottom:60px;}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+<div id="loading" class="loading-overlay hidden"><div class="spinner"></div></div>
+
+<!-- ============ 登录页 ============ -->
+<div id="page-login" class="page active">
+  <div class="login-page">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="icon">☕</div>
+        <h1>约吧</h1>
+        <p>认识有趣的人，一起吃喝玩乐</p>
+      </div>
+      <div class="avatar-options" id="avatarOptions">
+        <div class="av-opt" data-av="😊">😊</div>
+        <div class="av-opt" data-av="😎">😎</div>
+        <div class="av-opt sel" data-av="🤗">🤗</div>
+        <div class="av-opt" data-av="🥰">🥰</div>
+        <div class="av-opt" data-av="😏">😏</div>
+        <div class="av-opt" data-av="🤠">🤠</div>
+        <div class="av-opt" data-av="👻">👻</div>
+        <div class="av-opt" data-av="🐱">🐱</div>
+      </div>
+      <input class="login-input" id="nicknameInput" placeholder="输入你的昵称" maxlength="20" autocomplete="off">
+      <button class="btn-pink" id="loginBtn" disabled>进入约吧</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 首页 ============ -->
+<div id="page-home" class="page has-nav">
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <h1 id="greeting">嗨 👋</h1>
+        <div class="sub">去认识有趣的人吧</div>
+      </div>
+      <button class="header-btn" id="goProfileBtn">我的</button>
+    </div>
+  </div>
+  <div class="type-tabs" id="typeTabs"></div>
+  <div id="invitationList"></div>
+  <div class="load-more" id="homeLoadMore"></div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon">🏠</span>邀约</div>
+    <div class="nav-item" onclick="showPage('create')"><span class="nav-icon">✏️</span>发布</div>
+    <div class="nav-item" onclick="showPage('my')"><span class="nav-icon">👤</span>我的</div>
+  </div>
+</div>
+
+<!-- ============ 发布页 ============ -->
+<div id="page-create" class="page has-nav">
+  <div class="simple-header"><h2>发布邀约</h2></div>
+  <div class="form">
+    <div class="form-group">
+      <label>邀约类型</label>
+      <div class="type-grid" id="createType">
+        <div class="type-opt" data-v="1">☕ 喝咖啡</div>
+        <div class="type-opt" data-v="2">🎬 看电影</div>
+        <div class="type-opt" data-v="3">✈️ 旅行</div>
+        <div class="type-opt" data-v="4">🎯 其他</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>标题</label>
+      <input id="createTitle" placeholder="取个吸引人的标题" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label>描述</label>
+      <textarea id="createDesc" placeholder="简单描述一下计划..." maxlength="500"></textarea>
+    </div>
+    <div class="form-group">
+      <label>地点（可选）</label>
+      <input id="createLocation" placeholder="比如：国贸星巴克">
+    </div>
+    <div class="form-group">
+      <label>时间（可选）</label>
+      <div class="datetime-group">
+        <input type="date" id="createDate">
+        <input type="time" id="createTime">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>人数上限</label>
+      <div class="count-grid" id="createCount">
+        <div class="count-opt active" data-v="10">10人</div>
+        <div class="count-opt" data-v="5">5人</div>
+        <div class="count-opt" data-v="2">2人</div>
+        <div class="count-opt" data-v="20">20人</div>
+        <div class="count-opt" data-v="50">50人</div>
+      </div>
+    </div>
+    <button class="btn-pink" id="createBtn" onclick="submitCreate()">发布邀约</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showPage('home')"><span class="nav-icon">🏠</span>邀约</div>
+    <div class="nav-item active" onclick="showPage('create')"><span class="nav-icon">✏️</span>发布</div>
+    <div class="nav-item" onclick="showPage('my')"><span class="nav-icon">👤</span>我的</div>
+  </div>
+</div>
+
+<!-- ============ 详情页 ============ -->
+<div id="page-detail" class="page has-nav">
+  <div class="simple-header"><span class="back" onclick="showPage('home')">←</span><h2>邀约详情</h2></div>
+  <div id="detailContent"></div>
+</div>
+
+<!-- ============ 我的 ============ -->
+<div id="page-my" class="page has-nav">
+  <div class="my-header" onclick="showPage('profile')">
+    <img class="avatar" id="myAvatar" src="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2265%22 x=%2250%22 font-size=%2250%22 text-anchor=%22middle%22>🤗</text></svg>'">
+    <div class="my-info">
+      <div class="my-name" id="myName">微信用户</div>
+      <div class="my-meta" id="myMeta"></div>
+    </div>
+    <span class="my-edit">编辑 ›</span>
+  </div>
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchMyTab('mine')" id="tabMine">我发布的</div>
+    <div class="tab" onclick="switchMyTab('joined')" id="tabJoined">我报名的</div>
+  </div>
+  <div id="myList"></div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showPage('home')"><span class="nav-icon">🏠</span>邀约</div>
+    <div class="nav-item" onclick="showPage('create')"><span class="nav-icon">✏️</span>发布</div>
+    <div class="nav-item active" onclick="showPage('my')"><span class="nav-icon">👤</span>我的</div>
+  </div>
+</div>
+
+<!-- ============ 个人资料 ============ -->
+<div id="page-profile" class="page">
+  <div class="simple-header"><span class="back" onclick="showPage('my')">←</span><h2>个人资料</h2></div>
+  <div class="profile-page">
+    <div class="avatar-area">
+      <div class="avatar" id="profileAvatarDisplay" style="display:inline-flex;align-items:center;justify-content:center;font-size:32px;">🤗</div>
+    </div>
+    <div class="form-group">
+      <label>昵称</label>
+      <input id="profileNickname" maxlength="20">
+    </div>
+    <div class="form-group">
+      <label>性别</label>
+      <div class="type-grid">
+        <div class="type-opt" onclick="selGender(1)" id="g1">♂ 男</div>
+        <div class="type-opt" onclick="selGender(2)" id="g2">♀ 女</div>
+        <div class="type-opt active" onclick="selGender(0)" id="g0">保密</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>年龄</label>
+      <input type="number" id="profileAge" placeholder="你的年龄" maxlength="3">
+    </div>
+    <div class="form-group">
+      <label>城市</label>
+      <input id="profileCity" placeholder="你所在的城市">
+    </div>
+    <div class="form-group">
+      <label>自我介绍</label>
+      <textarea id="profileIntro" placeholder="简单介绍一下自己" maxlength="200"></textarea>
+    </div>
+    <div class="form-group">
+      <label>兴趣标签（点击选择）</label>
+      <div class="tag-grid" id="interestGrid"></div>
+    </div>
+    <button class="btn-pink" onclick="saveProfile()">保存资料</button>
+  </div>
+</div>
+
+<script>
+// ============ 配置 ============
+const API = 'http://106.54.13.52:3000/api';
+let TOKEN = localStorage.getItem('token') || '';
+let USER = JSON.parse(localStorage.getItem('user') || 'null');
+const AVATARS = ['😊','😎','🤗','🥰','😏','🤠','👻','🐱'];
+const INTERESTS = ['运动','读书','电影','美食','旅行','摄影','音乐','游戏','绘画','健身','瑜伽','户外','骑行','咖啡','桌游','手工','编程','宠物'];
+
+// ============ 工具 ============
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2000);}
+function showLoading(){document.getElementById('loading').classList.remove('hidden');}
+function hideLoading(){document.getElementById('loading').classList.add('hidden');}
+
+async function api(url, method='GET', data=null){
+  const opt={method,headers:{'Content-Type':'application/json'}};
+  if(TOKEN) opt.headers['Authorization']='Bearer '+TOKEN;
+  if(data) opt.body=JSON.stringify(data);
+  const res=await fetch(API+url,opt);
+  const j=await res.json();
+  if(j.code===401){toast('登录已过期');localStorage.clear();TOKEN='';USER=null;showPage('login');return null;}
+  if(j.code!==0){toast(j.msg||'请求失败');return null;}
+  return j.data;
+}
+
+// ============ 页面切换 ============
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='home') loadInvitations(true);
+  if(name==='my'){updateMyInfo();loadMyList(true);}
+  if(name==='profile') loadProfile();
+}
+
+let currentType=0, homePage=1, homeHasMore=true, homeLoading=false;
+let myTab='mine', myPage=1, myHasMore=true, myLoading=false;
+
+// ============ 登录 ============
+let selAvatar='🤗';
+document.getElementById('avatarOptions').addEventListener('click',e=>{
+  const opt=e.target.closest('.av-opt');
+  if(!opt) return;
+  document.querySelectorAll('.av-opt').forEach(o=>o.classList.remove('sel'));
+  opt.classList.add('sel');
+  selAvatar=opt.dataset.av;
+});
+document.getElementById('nicknameInput').addEventListener('input',e=>{
+  document.getElementById('loginBtn').disabled=!e.target.value.trim();
+});
+document.getElementById('loginBtn').addEventListener('click',async ()=>{
+  const nick=document.getElementById('nicknameInput').value.trim();
+  if(!nick){toast('请输入昵称');return;}
+  showLoading();
+  const data=await api('/auth/web-login','POST',{nickname:nick,avatar:selAvatar});
+  hideLoading();
+  if(!data) return;
+  TOKEN=data.token; USER=data.user;
+  localStorage.setItem('token',TOKEN);
+  localStorage.setItem('user',JSON.stringify(USER));
+  showPage('home');
+  loadInvitations(true);
+});
+
+// ============ 首页 ============
+function buildTypeTabs(){
+  const types=[{n:'全部',v:0},{n:'☕ 喝咖啡',v:1},{n:'🎬 看电影',v:2},{n:'✈️ 旅行',v:3},{n:'🎯 其他',v:4}];
+  document.getElementById('typeTabs').innerHTML=types.map(t=>
+    `<span class="type-tab ${t.v===currentType?'active':''}" onclick="switchType(${t.v})">${t.n}</span>`
+  ).join('');
+}
+
+function switchType(v){
+  currentType=v; homePage=1; homeHasMore=true;
+  buildTypeTabs();
+  loadInvitations(true);
+}
+
+async function loadInvitations(reset){
+  if(homeLoading) return;
+  if(!reset&&!homeHasMore) return;
+  homeLoading=true;
+  if(reset){homePage=1;document.getElementById('invitationList').innerHTML='';}
+  document.getElementById('homeLoadMore').textContent='加载中...';
+  const data=await api('/invitation/list?type='+currentType+'&page='+homePage+'&pageSize=20');
+  document.getElementById('homeLoadMore').textContent='';
+  if(!data){homeLoading=false;return;}
+  
+  const list=reset?data.list:[...document.querySelectorAll('#invitationList .card')].length?data.list:data.list;
+  homeHasMore=data.hasMore;
+  homePage=data.page+1;
+  
+  if(list.length===0){
+    document.getElementById('invitationList').innerHTML='<div class="empty"><div class="icon">📭</div><p>暂无邀约，去发布第一个吧</p></div>';
+    homeLoading=false;
+    return;
+  }
+  
+  let html='';
+  list.forEach(i=>{
+    const badgeCls='badge-'+i.type;
+    const time=i.event_time?'<span>📅 '+i.event_time+'</span>':'';
+    const loc=i.location?'<span>📍 '+i.location+'</span>':'';
+    html+=`
+    <div class="card" onclick="showDetail(${i.id})">
+      <div class="card-header">
+        <div class="user-row">
+          <img class="avatar" src="${i.avatar||''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2265%22 x=%2250%22 font-size=%2250%22 text-anchor=%22middle%22>🤗</text></svg>'">
+          <div class="user-info">
+            <div class="nickname">${i.nickname||'匿名'}</div>
+            <div class="meta">${i.gender==1?'♂':i.gender==2?'♀':''} ${i.age||''}${i.age?'岁':''} · ${i.city||''}</div>
+          </div>
+        </div>
+        <span class="badge ${badgeCls}">${i.type_name}</span>
+      </div>
+      <div class="card-title">${i.title}</div>
+      ${i.description?`<div class="card-desc">${i.description}</div>`:''}
+      <div class="card-info">${time}${loc}</div>
+      <div class="card-footer">
+        <span class="count">👥 ${i.participant_count}人已报名</span>
+        <button class="btn-sm">去看看</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('invitationList').innerHTML=html;
+  homeLoading=false;
+}
+
+// 滚动加载
+window.addEventListener('scroll',()=>{
+  if((window.innerHeight+window.scrollY)>=document.body.offsetHeight-200){
+    if(document.getElementById('page-home').classList.contains('active'))
+      loadInvitations(false);
+  }
+});
+
+// ============ 发布 ============
+let createType=0, createCount=10;
+document.getElementById('createType').addEventListener('click',e=>{
+  const o=e.target.closest('.type-opt');
+  if(!o) return;
+  document.querySelectorAll('#createType .type-opt').forEach(t=>t.classList.remove('active'));
+  o.classList.add('active');
+  createType=parseInt(o.dataset.v);
+});
+document.getElementById('createCount').addEventListener('click',e=>{
+  const o=e.target.closest('.count-opt');
+  if(!o) return;
+  document.querySelectorAll('#createCount .count-opt').forEach(t=>t.classList.remove('active'));
+  o.classList.add('active');
+  createCount=parseInt(o.dataset.v);
+});
+
+async function submitCreate(){
+  if(!createType){toast('请选择邀约类型');return;}
+  const title=document.getElementById('createTitle').value.trim();
+  if(!title){toast('请填写标题');return;}
+  showLoading();
+  const evt=document.getElementById('createDate').value?document.getElementById('createDate').value+' '+(document.getElementById('createTime').value||'00:00')+':00':null;
+  const data=await api('/invitation/create','POST',{
+    type:createType,title,
+    description:document.getElementById('createDesc').value.trim(),
+    location:document.getElementById('createLocation').value.trim(),
+    event_time:evt,max_participants:createCount
+  });
+  hideLoading();
+  if(data){toast('发布成功 🎉');showPage('home');loadInvitations(true);}
+}
+
+// ============ 详情 ============
+let detailId=0;
+async function showDetail(id){
+  detailId=id;
+  showPage('detail');
+  showLoading();
+  const d=await api('/invitation/detail/'+id);
+  hideLoading();
+  if(!d){document.getElementById('detailContent').innerHTML='<div class="empty"><div class="icon">😅</div><p>加载失败</p></div>';return;}
+  
+  const badgeCls='badge-'+d.type;
+  let pHtml='';
+  if(d.participants&&d.participants.length){
+    pHtml=`<div class="participants"><h3>已报名的人 (${d.participant_count})</h3><div class="p-list">`;
+    d.participants.forEach(p=>{
+      pHtml+=`<div class="p-item"><img class="avatar" src="${p.avatar||''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2265%22 x=%2250%22 font-size=%2250%22 text-anchor=%22middle%22>🤗</text></svg>'"><div class="name">${p.nickname}</div></div>`;
+    });
+    pHtml+=`</div></div>`;
+  }
+  
+  let actionHtml='';
+  if(!d.is_owner){
+    if(!d.is_joined){
+      actionHtml=`<div class="action-fixed"><button class="btn-pink" onclick="joinDetail(${d.id})">我要去 🙋</button></div>`;
+    } else {
+      actionHtml=`<div class="action-fixed" style="display:flex;gap:10px;"><button class="btn-pink" style="flex:1">✅ 已报名</button><button class="btn-outline-sm" onclick="cancelJoinDetail(${d.id})">取消</button></div>`;
+    }
+  } else {
+    actionHtml=`<div class="action-fixed"><button class="btn-outline-sm" onclick="closeDetail(${d.id})">结束招募</button></div>`;
+  }
+  
+  document.getElementById('page-detail').classList.toggle('has-nav',!d.is_owner||!d.is_owner);
+  
+  document.getElementById('detailContent').innerHTML=`
+    <div class="card">
+      <div class="detail-host">
+        <img class="avatar" src="${d.avatar||''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2265%22 x=%2250%22 font-size=%2250%22 text-anchor=%22middle%22>🤗</text></svg>'">
+        <div class="info">
+          <div class="name">${d.nickname}</div>
+          <div class="bio">${d.gender==1?'♂ ':d.gender==2?'♀ ':''}${d.age||''}${d.age?'岁':''} · ${d.city||''}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="badge ${badgeCls}" style="display:inline-block;margin-bottom:10px;">${d.type_name}</span>
+      <div class="detail-title">${d.title}</div>
+      ${d.description?`<div class="detail-desc">${d.description}</div>`:''}
+      <div class="detail-meta">
+        ${d.event_time?'<span>📅 '+d.event_time+'</span>':''}
+        ${d.location?'<span>📍 '+d.location+'</span>':''}
+        <span>👥 ${d.participant_count}/${d.max_participants}人</span>
+      </div>
+    </div>
+    ${pHtml}
+    ${actionHtml}
+  `;
+}
+
+async function joinDetail(id){
+  showLoading();
+  const d=await api('/invitation/join','POST',{invitation_id:id});
+  hideLoading();
+  if(d) {toast('报名成功 🎉');showDetail(id);}
+}
+async function cancelJoinDetail(id){
+  if(!confirm('确定取消报名吗？')) return;
+  showLoading();
+  const d=await api('/invitation/cancel-join','POST',{invitation_id:id});
+  hideLoading();
+  if(d) {toast('已取消');showDetail(id);}
+}
+async function closeDetail(id){
+  if(!confirm('结束招募后其他人不能报名，确定吗？')) return;
+  showLoading();
+  const d=await api('/invitation/close','POST',{invitation_id:id});
+  hideLoading();
+  if(d) {toast('已结束');showDetail(id);}
+}
+
+// ============ 我的 ============
+function updateMyInfo(){
+  if(!USER) return;
+  document.getElementById('myName').textContent=USER.nickname||'微信用户';
+  const gender=USER.gender==1?'♂ ':USER.gender==2?'♀ ':'';
+  const age=USER.age?USER.age+'岁':'';
+  const city=USER.city||'';
+  document.getElementById('myMeta').textContent=[gender+age,city].filter(Boolean).join(' · ');
+  document.getElementById('myAvatar').src=USER.avatar||'';
+}
+
+function switchMyTab(tab){
+  myTab=tab;
+  document.querySelectorAll('#page-my .tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab'+(tab==='mine'?'Mine':'Joined')).classList.add('active');
+  loadMyList(true);
+}
+
+async function loadMyList(reset){
+  if(myLoading) return;
+  if(!reset&&!myHasMore) return;
+  myLoading=true;
+  if(reset){myPage=1;document.getElementById('myList').innerHTML='';}
+  const fn=myTab==='mine'?'/invitation/mine':'/invitation/joined';
+  const data=await api(fn+'?page='+myPage);
+  if(!data){myLoading=false;return;}
+  myHasMore=data.hasMore;
+  myPage=data.page+1;
+  const list=data.list;
+  if(list.length===0){
+    document.getElementById('myList').innerHTML=`<div class="empty"><div class="icon">${myTab==='mine'?'📝':'📭'}</div><p>${myTab==='mine'?'还没发布过邀约':'还没报名过活动'}</p></div>`;
+    myLoading=false;
+    return;
+  }
+  let html='';
+  list.forEach(i=>{
+    const badgeCls='badge-'+i.type;
+    html+=`
+    <div class="card" onclick="showDetail(${i.id})">
+      <div class="card-header">
+        <span class="badge ${badgeCls}">${i.type_name}</span>
+        <span style="font-size:12px;color:${i.status==1?'#34A853':'#999'}">${i.status==1?'招募中':'已结束'}</span>
+      </div>
+      <div class="card-title">${i.title}</div>
+      ${i.event_time?'<div class="card-info"><span>📅 '+i.event_time+'</span></div>':''}
+      <div class="card-footer"><span class="count">👥 ${i.participant_count}人已报名</span><span style="font-size:12px;color:#bbb;">查看 ›</span></div>
+    </div>`;
+  });
+  document.getElementById('myList').innerHTML=html;
+  myLoading=false;
+}
+
+// ============ 个人资料 ============
+let selectedGender=0, selectedInterests=[];
+
+function loadProfile(){
+  if(!USER) return;
+  document.getElementById('profileNickname').value=USER.nickname||'';
+  selectedGender=USER.gender||0;
+  document.querySelectorAll('#page-profile .type-grid .type-opt').forEach(t=>t.classList.remove('active'));
+  document.getElementById('g'+selectedGender).classList.add('active');
+  document.getElementById('profileAge').value=USER.age||'';
+  document.getElementById('profileCity').value=USER.city||'';
+  document.getElementById('profileIntro').value=USER.intro||'';
+  document.getElementById('profileAvatarDisplay').textContent=USER.avatar||'🤗';
+  selectedInterests=USER.interests||[];
+  document.getElementById('interestGrid').innerHTML=INTERESTS.map(t=>
+    `<span class="tag ${selectedInterests.includes(t)?'active':''}" onclick="toggleInterest(this,'${t}')">${t}</span>`
+  ).join('');
+}
+
+function toggleInterest(el,val){
+  el.classList.toggle('active');
+  const idx=selectedInterests.indexOf(val);
+  if(idx>-1) selectedInterests.splice(idx,1);
+  else{if(selectedInterests.length>=10){toast('最多选10个');return;}selectedInterests.push(val);}
+}
+
+function selGender(v){
+  selectedGender=v;
+  document.querySelectorAll('#page-profile .type-grid .type-opt').forEach(t=>t.classList.remove('active'));
+  document.getElementById('g'+v).classList.add('active');
+}
+
+async function saveProfile(){
+  const nick=document.getElementById('profileNickname').value.trim();
+  if(!nick){toast('请输入昵称');return;}
+  showLoading();
+  const data=await api('/auth/profile/update','POST',{
+    nickname:nick,avatar:document.getElementById('profileAvatarDisplay').textContent,
+    gender:selectedGender,age:parseInt(document.getElementById('profileAge').value)||0,
+    city:document.getElementById('profileCity').value,intro:document.getElementById('profileIntro').value,
+    interests:selectedInterests
+  });
+  hideLoading();
+  if(data){
+    USER={...USER,nickname:nick,gender:selectedGender,age:parseInt(document.getElementById('profileAge').value)||0,
+      city:document.getElementById('profileCity').value,intro:document.getElementById('profileIntro').value,
+      interests:selectedInterests};
+    localStorage.setItem('user',JSON.stringify(USER));
+    toast('保存成功 ✅');
+    updateMyInfo();
+  }
+}
+
+// ============ 初始化 ============
+buildTypeTabs();
+if(TOKEN&&USER){
+  showPage('home');
+  loadInvitations(true);
+}
+</script>
+</body>
+</html>

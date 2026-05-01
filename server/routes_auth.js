@@ -110,4 +110,46 @@ router.get('/user/:id', auth, async (req, res) => {
   }
 });
 
+// ============ Web 端简易登录（不需要微信授权） ============
+router.post('/web-login', async (req, res) => {
+  try {
+    const { nickname, avatar } = req.body;
+    if (!nickname || !nickname.trim()) {
+      return res.json({ code: 400, msg: '请填写昵称' });
+    }
+
+    // 用 nickname 查找或创建用户（Web 端简化版）
+    const [rows] = await pool.query(
+      'SELECT id, nickname, avatar, gender, age, city, intro, interests FROM users WHERE nickname = ? ORDER BY id DESC LIMIT 1',
+      [nickname.trim()]
+    );
+    
+    let user;
+    if (rows.length === 0) {
+      const [result] = await pool.query(
+        'INSERT INTO users (openid, nickname, avatar) VALUES (?, ?, ?)',
+        ['web_' + Date.now() + '_' + Math.random().toString(36).slice(2), nickname.trim(), avatar || '']
+      );
+      user = { id: result.insertId, nickname: nickname.trim(), avatar: avatar || '', gender: 0, age: 0, city: '', intro: '', interests: '' };
+    } else {
+      user = rows[0];
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, openid: user.openid || 'web' },
+      config.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    if (typeof user.interests === 'string') {
+      user.interests = user.interests ? user.interests.split(',') : [];
+    }
+
+    res.json({ code: 0, data: { token, user }, msg: '登录成功' });
+  } catch (err) {
+    console.error('Web登录失败:', err);
+    res.json({ code: 500, msg: '服务器错误' });
+  }
+});
+
 module.exports = router;
