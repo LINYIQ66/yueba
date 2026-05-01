@@ -10,6 +10,12 @@
     </view>
   </view>
 
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="🔍 搜索邀约、地点..." value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="doSearch" confirm-type="search"/>
+    <text class="search-cancel" wx:if="{{searchKeyword}}" bindtap="clearSearch">取消</text>
+  </view>
+
   <!-- 分类筛选 -->
   <scroll-view class="type-tabs" scroll-x>
     <view 

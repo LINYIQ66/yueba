@@ -3,7 +3,7 @@ App({
   globalData: {
     token: '',
     userInfo: null,
-    serverUrl: 'http://106.54.13.52:3000', // 要改成你的服务器 IP
+    serverUrl: 'https://ai.happysocial.xyz', // 要改成你的服务器 IP
   },
 
   onLaunch() {

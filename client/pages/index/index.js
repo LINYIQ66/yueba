@@ -4,6 +4,8 @@ Page({
   data: {
     greeting: '嗨，今天想做什么？',
     avatar: '',
+    searchKeyword: '',
+    searchMode: false,
     currentType: 0,
     typeList: [
       { name: '全部', value: 0 },
@@ -112,6 +114,30 @@ Page({
   },
 
   onReachBottom() {
+    if (this.data.searchMode) return;
     this.loadInvitations();
+  },
+
+  // ============ 搜索 ============
+  onSearchInput(e) {
+    this.setData({ searchKeyword: e.detail.value });
+  },
+
+  async doSearch() {
+    const keyword = this.data.searchKeyword.trim();
+    if (!keyword) return;
+    this.setData({ searchMode: true, loading: true, invitations: [] });
+    try {
+      const data = await api.searchInvitations(keyword);
+      this.setData({ invitations: data.list || [], loading: false, hasMore: data.hasMore });
+    } catch (err) {
+      this.setData({ loading: false });
+    }
+  },
+
+  clearSearch() {
+    this.setData({ searchKeyword: '', searchMode: false }, () => {
+      this.loadInvitations(true);
+    });
   },
 });

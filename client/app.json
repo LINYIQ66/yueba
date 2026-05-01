@@ -5,7 +5,9 @@
     "pages/detail/detail",
     "pages/my/my",
     "pages/profile/profile",
-    "pages/chat/chat"
+    "pages/chat/chat",
+    "pages/notifications/notifications",
+    "pages/user-profile/user-profile"
   ],
   "window": {
     "navigationBarTitleText": "约吧",

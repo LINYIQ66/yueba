@@ -155,3 +155,27 @@
   color: #999;
   line-height: 1.5;
 }
+
+/* 邀约图片 */
+.image-scroll {
+  white-space: nowrap;
+  margin-bottom: 20rpx;
+}
+
+.inv-image {
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 16rpx;
+  margin-right: 16rpx;
+}
+
+/* 举报 */
+.report-bar {
+  text-align: center;
+  padding: 20rpx;
+}
+
+.report-btn {
+  font-size: 24rpx;
+  color: #bbb;
+}

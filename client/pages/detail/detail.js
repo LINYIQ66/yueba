@@ -71,8 +71,36 @@ Page({
   goUserProfile(e) {
     const userId = e.currentTarget.dataset.id;
     if (!userId) return;
-    // WeChat mini program doesn't have user profile page yet
-    // Just navigate to the detail
-    wx.showToast({ title: '点击个人资料可编辑', icon: 'none' });
+    wx.navigateTo({ url: '/pages/user-profile/user-profile?id=' + userId });
+  },
+
+  // 预览图片
+  previewImage(e) {
+    const src = e.currentTarget.dataset.src;
+    const urls = this.data.detail.images || [];
+    wx.previewImage({ current: src, urls });
+  },
+
+  // 举报
+  report() {
+    const detail = this.data.detail;
+    wx.showActionSheet({
+      itemList: ['内容不合适', '虚假信息', '骚扰行为', '其他原因'],
+      success: (res) => {
+        const reasons = ['内容不合适', '虚假信息', '骚扰行为', '其他原因'];
+        wx.showModal({
+          title: '确认举报',
+          content: '确定要举报这条邀约吗？',
+          success: async (confirm) => {
+            if (confirm.confirm) {
+              try {
+                await api.reportInvitation(detail.id, reasons[res.tapIndex]);
+                wx.showToast({ title: '举报已提交', icon: 'success' });
+              } catch (err) {}
+            }
+          },
+        });
+      },
+    });
   },
 });

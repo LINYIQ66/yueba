@@ -56,6 +56,10 @@ Page({
     wx.navigateTo({ url: '/pages/profile/profile' });
   },
 
+  goNotifications() {
+    wx.navigateTo({ url: '/pages/notifications/notifications' });
+  },
+
   onReachBottom() {
     this.loadList();
   },

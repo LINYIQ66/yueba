@@ -17,6 +17,11 @@
       <view class="type-badge type-{{detail.type}}">{{detail.type_name}}</view>
       <text class="detail-title">{{detail.title}}</text>
       <text class="detail-desc" wx:if="{{detail.description}}">{{detail.description}}</text>
+
+      <!-- 邀约图片 -->
+      <scroll-view class="image-scroll" scroll-x wx:if="{{detail.images && detail.images.length > 0}}">
+        <image class="inv-image" wx:for="{{detail.images}}" wx:key="*this" src="{{item}}" mode="aspectFill" bindtap="previewImage" data-src="{{item}}"></image>
+      </scroll-view>
       
       <view class="detail-meta">
         <view class="meta-item" wx:if="{{detail.event_time}}">
@@ -62,6 +67,11 @@
 
     <view class="action-bar" wx:if="{{detail.is_owner}}">
       <button class="btn-outline" bindtap="closeInvitation">结束招募</button>
+    </view>
+
+    <!-- 举报按钮 -->
+    <view class="report-bar" wx:if="{{!detail.is_owner}}">
+      <text class="report-btn" bindtap="report">⚑ 举报</text>
     </view>
 
     <!-- 联系入口 -->

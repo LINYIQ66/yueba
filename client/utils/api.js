@@ -128,6 +128,42 @@ function getConversations() {
   return request('/api/message/conversations');
 }
 
+// ============ 新增接口 ============
+function searchInvitations(keyword, page = 1) {
+  return request('/api/invitation/search?keyword=' + encodeURIComponent(keyword) + '&page=' + page);
+}
+
+function getUserProfile(userId) {
+  return request('/api/auth/user/' + userId + '/profile');
+}
+
+function reportInvitation(invitation_id, reason) {
+  return request('/api/invitation/report', 'POST', { invitation_id, reason });
+}
+
+function uploadFile(filePath) {
+  return new Promise((resolve, reject) => {
+    const token = app.globalData.token;
+    wx.uploadFile({
+      url: app.globalData.serverUrl + '/api/upload',
+      filePath,
+      name: 'file',
+      header: { Authorization: 'Bearer ' + token },
+      formData: {},
+      success(res) {
+        const data = JSON.parse(res.data);
+        if (data.code === 0) resolve(data.data);
+        else reject(data);
+      },
+      fail: reject,
+    });
+  });
+}
+
+function getAllInvitations(type = 0, page = 1) {
+  return request('/api/invitation/all?type=' + type + '&page=' + page);
+}
+
 module.exports = {
   wxLogin,
   getProfile,
@@ -147,4 +183,9 @@ module.exports = {
   sendMessage,
   getChat,
   getConversations,
+  searchInvitations,
+  getUserProfile,
+  reportInvitation,
+  uploadFile,
+  getAllInvitations,
 };

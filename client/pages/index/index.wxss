@@ -170,3 +170,28 @@
   font-size: 24rpx;
   color: #999;
 }
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 30rpx;
+  background: linear-gradient(180deg, #FF6B81, #FF8E9E);
+}
+
+.search-input {
+  flex: 1;
+  height: 64rpx;
+  background: rgba(255,255,255,0.9);
+  border-radius: 40rpx;
+  padding: 0 30rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.search-cancel {
+  font-size: 26rpx;
+  color: #fff;
+  margin-left: 20rpx;
+  padding: 10rpx;
+}

@@ -1,0 +1,165 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+/* 用户信息头部 */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 30rpx 40rpx;
+  background: linear-gradient(135deg, #FF6B81, #FF8E9E);
+  color: #fff;
+}
+
+.profile-header .avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(255,255,255,0.5);
+  background: #eee;
+}
+
+.profile-header .nickname {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-top: 20rpx;
+}
+
+.profile-header .meta {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-top: 8rpx;
+}
+
+.profile-header .intro {
+  font-size: 26rpx;
+  opacity: 0.85;
+  margin-top: 16rpx;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 600rpx;
+}
+
+/* 区块 */
+.section {
+  padding: 30rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+/* 兴趣标签滚动 */
+.tag-scroll {
+  white-space: nowrap;
+  padding: 6rpx 0;
+}
+
+.tag-item {
+  display: inline-block;
+  padding: 12rpx 30rpx;
+  margin-right: 16rpx;
+  background: #FFF0F2;
+  color: #FF6B81;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 邀约卡片 */
+.invitation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.invitation-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+}
+
+.invitation-card:active {
+  opacity: 0.85;
+}
+
+.card-header {
+  margin-bottom: 16rpx;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 6rpx 20rpx;
+  border-radius: 30rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.type-1 { background: #FFF0E6; color: #FF8C42; }
+.type-2 { background: #E8F0FE; color: #4285F4; }
+.type-3 { background: #E8F8E8; color: #34A853; }
+.type-4 { background: #F3E8FF; color: #9334E6; }
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.card-body .title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #222;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.info-icon {
+  font-size: 24rpx;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.participant-count {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-state .icon {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+}

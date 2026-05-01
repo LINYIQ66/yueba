@@ -1,0 +1,74 @@
+<view class="page">
+
+  <!-- 加载中 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 内容 -->
+  <view wx:if="{{!loading}}">
+    <!-- 用户信息 -->
+    <view class="profile-header">
+      <image class="avatar" src="{{user.avatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+      <text class="nickname">{{user.nickname}}</text>
+      <text class="meta">
+        {{user.gender == 1 ? '♂ 男' : user.gender == 2 ? '♀ 女' : '保密'}}
+        <text wx:if="{{user.age}}"> · {{user.age}}岁</text>
+        <text wx:if="{{user.city}}"> · {{user.city}}</text>
+      </text>
+      <text class="intro" wx:if="{{user.intro}}">{{user.intro}}</text>
+    </view>
+
+    <!-- 兴趣标签 -->
+    <view class="section" wx:if="{{user.interests && user.interests.length > 0}}">
+      <text class="section-title">兴趣标签</text>
+      <scroll-view class="tag-scroll" scroll-x>
+        <view
+          class="tag-item"
+          wx:for="{{user.interests}}"
+          wx:key="*this"
+        >{{item}}</view>
+      </scroll-view>
+    </view>
+
+    <!-- TA发布的邀约 -->
+    <view class="section">
+      <text class="section-title">TA发布的邀约</text>
+
+      <!-- 邀约卡片列表 -->
+      <view class="invitation-list" wx:if="{{invitations.length > 0}}">
+        <view
+          class="invitation-card"
+          wx:for="{{invitations}}"
+          wx:key="id"
+          bindtap="goToDetail"
+          data-id="{{item.id}}"
+        >
+          <view class="card-header">
+            <text class="type-badge type-{{item.type}}">{{item.type_name}}</text>
+          </view>
+          <view class="card-body">
+            <text class="title">{{item.title}}</text>
+            <view class="info-row" wx:if="{{item.event_time}}">
+              <text class="info-icon">📅</text>
+              <text class="info-text">{{item.event_time}}</text>
+            </view>
+            <view class="info-row" wx:if="{{item.location}}">
+              <text class="info-icon">📍</text>
+              <text class="info-text">{{item.location}}</text>
+            </view>
+          </view>
+          <view class="card-footer">
+            <text class="participant-count">👥 {{item.participant_count}}人已报名</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{invitations.length === 0}}">
+        <text class="icon">📭</text>
+        <text>TA还没有发布过邀约</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,111 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 120rpx;
+}
+
+/* 通知列表 */
+.noti-list {
+  padding: 0;
+}
+
+.noti-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 30rpx;
+  background: #fff;
+  border-bottom: 2rpx solid #f0f0f0;
+  transition: background 0.2s;
+}
+
+.noti-item:active {
+  background: #f9f9f9;
+}
+
+.noti-item.unread {
+  background: #FFF5F6;
+}
+
+.noti-item.unread:active {
+  background: #FFEEF0;
+}
+
+/* 左侧 */
+.noti-left {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 24rpx;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+}
+
+.unread-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #FF6B81;
+  border: 3rpx solid #fff;
+}
+
+/* 右侧 */
+.noti-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.noti-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6rpx;
+  line-height: 1.5;
+}
+
+.from-nickname {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.content {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+/* 空状态 & 加载 */
+.load-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60rpx 0;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  color: #bbb;
+}
+
+.empty-state .icon {
+  font-size: 80rpx;
+}

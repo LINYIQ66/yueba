@@ -152,4 +152,46 @@ router.post('/web-login', async (req, res) => {
   }
 });
 
+// ============ 获取用户公开主页（含其邀约） ============
+router.get('/user/:id/profile', auth, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    // 用户信息
+    const [users] = await pool.query(
+      'SELECT id, nickname, avatar, gender, age, city, intro, interests, created_at FROM users WHERE id = ?',
+      [userId]
+    );
+    if (users.length === 0) return res.json({ code: 404, msg: '用户不存在' });
+
+    const user = users[0];
+    user.interests = user.interests ? user.interests.split(',') : [];
+
+    // 该用户发布的邀约
+    const [invitations] = await pool.query(
+      `SELECT i.*,
+        (SELECT COUNT(*) FROM participants p WHERE p.invitation_id = i.id AND p.status = 1) as participant_count
+      FROM invitations i
+      WHERE i.user_id = ? AND i.status = 1
+      ORDER BY i.created_at DESC
+      LIMIT 20`,
+      [userId]
+    );
+
+    const TYPE_MAP = { 1: '喝咖啡', 2: '看电影', 3: '去旅行', 4: '其他' };
+    const list = invitations.map(r => ({
+      ...r,
+      type_name: TYPE_MAP[r.type] || '其他',
+      images: r.images ? JSON.parse(r.images) : [],
+      event_time: r.event_time ? r.event_time.toISOString().replace('T', ' ').substring(0, 16) : '',
+      created_at: r.created_at ? r.created_at.toISOString().replace('T', ' ').substring(0, 16) : '',
+    }));
+
+    res.json({ code: 0, data: { user, invitations: list } });
+  } catch (err) {
+    console.error(err);
+    res.json({ code: 500, msg: '服务器错误' });
+  }
+});
+
 module.exports = router;

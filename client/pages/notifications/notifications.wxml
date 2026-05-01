@@ -1,0 +1,37 @@
+<view class="page">
+  <!-- 通知列表 -->
+  <view class="noti-list" wx:if="{{notifications.length > 0}}">
+    <view
+      class="noti-item {{item.is_read ? '' : 'unread'}}"
+      wx:for="{{notifications}}" wx:key="id"
+      data-id="{{item.id}}"
+      data-invitation-id="{{item.invitation_id}}"
+      bindtap="onItemTap"
+    >
+      <view class="noti-left">
+        <image class="avatar" src="{{item.from_avatar}}" mode="aspectFill"></image>
+        <view class="unread-dot" wx:if="{{!item.is_read}}"></view>
+      </view>
+      <view class="noti-right">
+        <view class="noti-body">
+          <text class="from-nickname">{{item.from_nickname}}</text>
+          <text class="content">{{item.content}}</text>
+        </view>
+        <text class="time">{{item.created_at}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="load-more" wx:if="{{!loading && notifications.length === 0}}">
+    <view class="empty-state">
+      <text class="icon">🔔</text>
+      <text>暂无消息通知</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
