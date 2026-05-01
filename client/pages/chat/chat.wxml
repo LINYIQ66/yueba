@@ -1,0 +1,27 @@
+<view class="page">
+  <view class="chat-list">
+    <view 
+      class="conversation-item" 
+      wx:for="{{conversations}}" wx:key="*this"
+      bindtap="openChat" data-invitation="{{item.invitation_id}}" data-other="{{item.other_user}}" data-title="{{item.title}}"
+    >
+      <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+      <view class="conv-info">
+        <view class="conv-header">
+          <text class="conv-name">{{item.nickname}}</text>
+          <text class="conv-time">{{item.last_time}}</text>
+        </view>
+        <text class="conv-title">{{item.title}}</text>
+        <text class="conv-preview">{{item.last_message}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="load-more" wx:if="{{conversations.length === 0 && !loading}}">
+    <view class="empty-state">
+      <text class="icon">💬</text>
+      <text>还没有聊天记录</text>
+      <text>报名活动后可以在这里聊天哦</text>
+    </view>
+  </view>
+</view>

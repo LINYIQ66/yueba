@@ -1,0 +1,74 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 类型选择 */
+.type-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.type-option {
+  flex: 1;
+  min-width: 150rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 24rpx 10rpx;
+  background: #f9f9f9;
+  border-radius: 16rpx;
+  border: 2rpx solid #eee;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.type-option.active {
+  background: #FFF0F2;
+  border-color: #FF6B81;
+  color: #FF6B81;
+}
+
+.type-icon {
+  font-size: 40rpx;
+}
+
+/* 选择器 */
+.picker-input {
+  padding: 20rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  border: 2rpx solid #eee;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+/* 人数选择 */
+.count-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.count-option {
+  padding: 14rpx 30rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  border: 2rpx solid #eee;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.count-option.active {
+  background: #FFF0F2;
+  border-color: #FF6B81;
+  color: #FF6B81;
+}
+
+/* 发布按钮 */
+.btn-primary {
+  margin-top: 40rpx;
+}

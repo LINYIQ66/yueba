@@ -1,0 +1,64 @@
+<view class="page">
+  <view class="container">
+    <!-- 邀约类型 -->
+    <view class="input-group">
+      <label>邀约类型</label>
+      <view class="type-select">
+        <view 
+          class="type-option {{formData.type == item.value ? 'active' : ''}}"
+          wx:for="{{typeList}}" wx:key="value"
+          bindtap="selectType" data-value="{{item.value}}"
+        >
+          <text class="type-icon">{{item.icon}}</text>
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标题 -->
+    <view class="input-group">
+      <label>标题</label>
+      <input placeholder="取个吸引人的标题吧" value="{{formData.title}}" bindinput="onInput" data-field="title" maxlength="50"/>
+    </view>
+
+    <!-- 描述 -->
+    <view class="input-group">
+      <label>描述</label>
+      <textarea placeholder="简单介绍一下，比如计划怎么玩、想去哪里..." value="{{formData.description}}" bindinput="onInput" data-field="description" maxlength="500"/>
+    </view>
+
+    <!-- 地点 -->
+    <view class="input-group">
+      <label>地点（可选）</label>
+      <input placeholder="比如：国贸星巴克、三里屯" value="{{formData.location}}" bindinput="onInput" data-field="location"/>
+    </view>
+
+    <!-- 时间 -->
+    <view class="input-group">
+      <label>时间（可选）</label>
+      <picker mode="date" value="{{formData.date}}" bindchange="onDateChange">
+        <view class="picker-input">{{formData.date || '选择日期'}}</view>
+      </picker>
+      <picker mode="time" value="{{formData.time}}" bindchange="onTimeChange" wx:if="{{formData.date}}">
+        <view class="picker-input">{{formData.time || '选择时间'}}</view>
+      </picker>
+    </view>
+
+    <!-- 人数上限 -->
+    <view class="input-group">
+      <label>人数上限</label>
+      <view class="count-select">
+        <view 
+          class="count-option {{formData.max == item ? 'active' : ''}}"
+          wx:for="{{countList}}" wx:key="*this"
+          bindtap="selectCount" data-value="{{item}}"
+        >{{item}}人</view>
+      </view>
+    </view>
+
+    <!-- 发布按钮 -->
+    <button class="btn-primary" bindtap="submit" loading="{{submitting}}" disabled="{{submitting}}">
+      {{submitting ? '发布中...' : '发布邀约'}}
+    </button>
+  </view>
+</view>

@@ -1,0 +1,86 @@
+<view class="page">
+  <view class="container" wx:if="{{detail}}">
+    <!-- 发布者信息 -->
+    <view class="card">
+      <view class="host-row" bindtap="goUserProfile" data-id="{{detail.user_id}}">
+        <image class="avatar large" src="{{detail.avatar}}" mode="aspectFill"></image>
+        <view class="host-info">
+          <text class="host-name">{{detail.nickname}}</text>
+          <text class="host-meta">{{detail.gender == 1 ? '♂ 男' : '♀ 女'}} · {{detail.age}}岁 · {{detail.city}}</text>
+          <text class="host-intro" wx:if="{{detail.intro}}">{{detail.intro}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 邀约信息 -->
+    <view class="card">
+      <view class="type-badge type-{{detail.type}}">{{detail.type_name}}</view>
+      <text class="detail-title">{{detail.title}}</text>
+      <text class="detail-desc" wx:if="{{detail.description}}">{{detail.description}}</text>
+      
+      <view class="detail-meta">
+        <view class="meta-item" wx:if="{{detail.event_time}}">
+          <text class="meta-label">📅 时间</text>
+          <text class="meta-value">{{detail.event_time}}</text>
+        </view>
+        <view class="meta-item" wx:if="{{detail.location}}">
+          <text class="meta-label">📍 地点</text>
+          <text class="meta-value">{{detail.location}}</text>
+        </view>
+        <view class="meta-item">
+          <text class="meta-label">👥 已报名</text>
+          <text class="meta-value">{{detail.participant_count}} / {{detail.max_participants}}人</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 已报名的人 -->
+    <view class="card" wx:if="{{detail.participants && detail.participants.length > 0}}">
+      <view class="section-title">已报名的人</view>
+      <scroll-view class="participant-scroll" scroll-x>
+        <view 
+          class="participant-item" 
+          wx:for="{{detail.participants}}" wx:key="id"
+          bindtap="goUserProfile" data-id="{{item.id}}"
+        >
+          <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <text class="p-name">{{item.nickname}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-bar" wx:if="{{!detail.is_owner}}">
+      <button class="btn-primary" wx:if="{{!detail.is_joined}}" bindtap="join" loading="{{joining}}">
+        {{joining ? '报名中...' : '我要去 🙋'}}
+      </button>
+      <view class="joined-actions" wx:if="{{detail.is_joined}}">
+        <button class="btn-primary">✅ 已报名</button>
+        <button class="btn-outline" bindtap="cancelJoin">取消报名</button>
+      </view>
+    </view>
+
+    <view class="action-bar" wx:if="{{detail.is_owner}}">
+      <button class="btn-outline" bindtap="closeInvitation">结束招募</button>
+    </view>
+
+    <!-- 联系入口 -->
+    <view class="card contact-card" wx:if="{{detail.is_joined || detail.is_owner}}">
+      <view class="section-title">💬 消息</view>
+      <view class="contact-hint">
+        报名成功后，你可以和发起人在这里聊天约时间
+      </view>
+    </view>
+  </view>
+
+  <view class="load-more" wx:if="{{!detail && !loading}}">
+    <view class="empty-state">
+      <text class="icon">😅</text>
+      <text>加载失败</text>
+    </view>
+  </view>
+
+  <view class="load-more" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

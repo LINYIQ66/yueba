@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="container">
+    <!-- 头像 -->
+    <view class="avatar-section">
+      <image class="avatar large" src="{{avatar}}" mode="aspectFill" bindtap="chooseAvatar"></image>
+      <text class="avatar-hint">点击更换头像</text>
+    </view>
+
+    <!-- 表单 -->
+    <view class="input-group">
+      <label>昵称</label>
+      <input placeholder="输入昵称" value="{{nickname}}" bindinput="onInput" data-field="nickname" maxlength="20"/>
+    </view>
+
+    <view class="input-group">
+      <label>性别</label>
+      <view class="gender-select">
+        <view class="gender-option {{gender == 1 ? 'active' : ''}}" bindtap="selectGender" data-value="1">♂ 男</view>
+        <view class="gender-option {{gender == 2 ? 'active' : ''}}" bindtap="selectGender" data-value="2">♀ 女</view>
+        <view class="gender-option {{gender == 0 ? 'active' : ''}}" bindtap="selectGender" data-value="0">保密</view>
+      </view>
+    </view>
+
+    <view class="input-group">
+      <label>年龄</label>
+      <input placeholder="输入年龄" type="number" value="{{age}}" bindinput="onInput" data-field="age" maxlength="3"/>
+    </view>
+
+    <view class="input-group">
+      <label>城市</label>
+      <input placeholder="你在哪个城市？" value="{{city}}" bindinput="onInput" data-field="city"/>
+    </view>
+
+    <view class="input-group">
+      <label>自我介绍</label>
+      <textarea placeholder="简单介绍一下自己，让大家认识你" value="{{intro}}" bindinput="onInput" data-field="intro" maxlength="200"/>
+    </view>
+
+    <view class="input-group">
+      <label>兴趣标签（点击选择）</label>
+      <view class="tag-select">
+        <view 
+          class="tag-item {{interests.indexOf(item) > -1 ? 'active' : ''}}"
+          wx:for="{{interestList}}" wx:key="*this"
+          bindtap="toggleInterest" data-value="{{item}}"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <button class="btn-primary" bindtap="save" loading="{{saving}}">
+      保存资料
+    </button>
+  </view>
+</view>

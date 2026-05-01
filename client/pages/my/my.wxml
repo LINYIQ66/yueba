@@ -1,0 +1,58 @@
+<view class="page">
+  <!-- 用户信息头部 -->
+  <view class="my-header" bindtap="goProfile">
+    <image class="avatar large" src="{{user.avatar}}" mode="aspectFill"></image>
+    <view class="my-info">
+      <text class="my-name">{{user.nickname || '微信用户'}}</text>
+      <text class="my-meta">{{user.gender == 1 ? '♂ 男' : user.gender == 2 ? '♀ 女' : ''}} {{user.age > 0 ? user.age + '岁' : ''}} {{user.city || ''}}</text>
+      <text class="my-intro" wx:if="{{user.intro}}">{{user.intro}}</text>
+    </view>
+    <text class="edit-btn">编辑 ›</text>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="tab-bar">
+    <view class="tab {{activeTab == 'mine' ? 'active' : ''}}" bindtap="switchTab" data-tab="mine">我发布的</view>
+    <view class="tab {{activeTab == 'joined' ? 'active' : ''}}" bindtap="switchTab" data-tab="joined">我报名的</view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="invitation-list">
+    <view 
+      class="invitation-card" 
+      wx:for="{{invitations}}" wx:key="id"
+      bindtap="goDetail" data-id="{{item.id}}"
+    >
+      <view class="card-header">
+        <view class="type-badge type-{{item.type}}">{{item.type_name}}</view>
+        <text class="status-tag {{item.status == 1 ? 'active' : 'closed'}}">
+          {{item.status == 1 ? '招募中' : '已结束'}}
+        </text>
+      </view>
+      <view class="card-body">
+        <text class="title">{{item.title}}</text>
+        <view class="info-row" wx:if="{{item.event_time}}">
+          <text class="info-icon">📅</text>
+          <text class="info-text">{{item.event_time}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.location}}">
+          <text class="info-icon">📍</text>
+          <text class="info-text">{{item.location}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-icon">👥</text>
+          <text class="info-text">{{item.participant_count}}人已报名</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="load-more" wx:if="{{loading}}"><text>加载中...</text></view>
+  <view class="load-more" wx:if="{{!loading && invitations.length === 0}}">
+    <view class="empty-state">
+      <text class="icon">{{activeTab == 'mine' ? '📝' : '📭'}}</text>
+      <text>{{activeTab == 'mine' ? '还没发布过邀约' : '还没报名过活动'}}</text>
+    </view>
+  </view>
+  <view class="load-more" wx:if="{{!hasMore && invitations.length > 0}}">— 没有更多了 —</view>
+</view>

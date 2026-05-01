@@ -1,0 +1,71 @@
+<!-- 首页 - 邀约广场 -->
+<view class="page">
+  <view class="header-card">
+    <view class="greeting">
+      <text class="greeting-title">{{greeting}}</text>
+      <text class="greeting-sub">去认识有趣的人吧</text>
+    </view>
+    <view class="profile-btn" bindtap="goProfile">
+      <image class="avatar" src="{{avatar}}" mode="aspectFill"></image>
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="type-tabs" scroll-x>
+    <view 
+      class="type-tab {{currentType == item.value ? 'active' : ''}}"
+      wx:for="{{typeList}}" wx:key="value"
+      bindtap="switchType" data-value="{{item.value}}"
+    >
+      {{item.name}}
+    </view>
+  </scroll-view>
+
+  <!-- 邀约列表 -->
+  <view class="invitation-list">
+    <view 
+      class="invitation-card" 
+      wx:for="{{invitations}}" wx:key="id"
+      bindtap="goDetail" data-id="{{item.id}}"
+    >
+      <view class="card-header">
+        <view class="user-row">
+          <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view class="user-info">
+            <text class="nickname">{{item.nickname}}</text>
+            <text class="meta">{{item.gender == 1 ? '♂' : '♀'}} {{item.age}}岁 · {{item.city}}</text>
+          </view>
+        </view>
+        <view class="type-badge type-{{item.type}}">{{item.type_name}}</view>
+      </view>
+      <view class="card-body">
+        <text class="title">{{item.title}}</text>
+        <text class="desc" wx:if="{{item.description}}">{{item.description}}</text>
+        <view class="info-row" wx:if="{{item.event_time}}">
+          <text class="info-icon">📅</text>
+          <text class="info-text">{{item.event_time}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.location}}">
+          <text class="info-icon">📍</text>
+          <text class="info-text">{{item.location}}</text>
+        </view>
+      </view>
+      <view class="card-footer">
+        <text class="participant-count">👥 {{item.participant_count}}人已报名</text>
+        <button class="btn-primary small">去看看</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+  <view class="load-more" wx:if="{{!loading && invitations.length === 0 && !firstLoad}}">
+    <view class="empty-state">
+      <text class="icon">📭</text>
+      <text>暂无邀约，去发布第一个吧</text>
+    </view>
+  </view>
+  <view class="load-more" wx:if="{{!hasMore && invitations.length > 0}}">— 没有更多了 —</view>
+</view>
